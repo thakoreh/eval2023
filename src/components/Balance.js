@@ -22,11 +22,11 @@ function Balance({ activeWallet, onNewBalance }) {
       fetchBalance();
     }
 
-    // // Fetch the balance every second
-    // const intervalId = setInterval(fetchBalance, 10000);
+    // Fetch the balance every second
+    const intervalId = setInterval(fetchBalance, 5000);
 
-    // // Clear the interval when the component unmounts
-    // return () => clearInterval(intervalId);
+    // Clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, [activeWallet, onNewBalance]);
 
   return (

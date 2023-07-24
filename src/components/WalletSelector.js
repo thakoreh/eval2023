@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import { useTheme } from "@mui/material/styles";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 const ITEM_HEIGHT = 48;

@@ -14,7 +14,6 @@ const SearchPage = () => {
   const [detailsData, setDetailsData] = useState({});
   const [transactions, setTransactions] = useState([]);
   const { id } = useParams();
-  console.log("id: " + id);
 
   useEffect(() => {
     fetch(`http://localhost:8000/search/${id}`)
@@ -30,8 +29,6 @@ const SearchPage = () => {
       });
   }, [id]);
 
-  console.log("details :" + detailsData);
-  // You can add a loading state or return null or some placeholder if fetchSearchResults is null
   if (!detailsData) {
     return <p>Please enter a public address</p>;
   }
@@ -46,7 +43,6 @@ const SearchPage = () => {
           <p>Wallet Address: {detailsData?.walletAddress}</p>
         )}
 
-        {/* Assuming your fetchSearchResults has a balance property. */}
         <p>Balance: {detailsData?.balance}</p>
       </div>
       <h2>Transactions:</h2>

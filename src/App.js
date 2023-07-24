@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Unstable_Grid2";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -11,17 +10,10 @@ import Paper from "@mui/material/Paper";
 import { alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
-import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
 
-import ParticleBackground from "./particleBackground";
 import ParticlesBg from "particles-bg";
 import CreateWallet from "./components/create-wallet";
 import RequestFaucet from "./components/RequestFaucet";
@@ -41,52 +33,6 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-
-function Header({ activeWallet }) {
-  return (
-    <header>
-      <Grid container spacing={3}>
-        <Grid xs>
-          <Item style={{ height: "50px", fontSize: "35px" }}>
-            <Link to="/">Home</Link>
-          </Item>
-        </Grid>
-        <Grid xs={6}>
-          <Item>
-            <input
-              type="text"
-              placeholder="Enter an address, transaction hash, block hash, block number, or wallet name."
-              style={{
-                marginRight: "10px",
-                height: "50px",
-                width: "80%",
-                flexGrow: 0.5,
-                borderRadius: "10px",
-              }}
-            />
-            <Button variant="contained">Search</Button>
-          </Item>
-        </Grid>
-        <Grid xs>
-          <Item style={{ display: "grid", height: "50px" }}>
-            <div>
-              <div className="details">
-                <Link to="/details">Details</Link>
-              </div>
-              <div className="wallets">
-                <Link to="/wallets">Wallets</Link>
-              </div>
-
-              <div className="accountName">
-                <p>{activeWallet || "No Account Yet"}</p>
-              </div>
-            </div>
-          </Item>
-        </Grid>
-      </Grid>
-    </header>
-  );
-}
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -143,11 +89,8 @@ function SearchAppBar({ activeWallet }) {
   };
 
   const handleSearch = async () => {
-    // Call your backend service to search for the wallet address
-
     if (!searchedWallet) {
       alert("Please enter public address first");
-      // window.location.replace("http://localhost:3000/");
     } else {
       // The service should first search in MongoDB and then in BlockCypher if not found
       const response = await fetch(

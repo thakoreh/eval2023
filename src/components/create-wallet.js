@@ -1,7 +1,21 @@
 import React, { useState } from "react";
-import Modal from "react-modal";
+import Button from "@mui/material/Button";
+import WalletIcon from "@mui/icons-material/Wallet";
+import Box from "@mui/material/Box";
 
-Modal.setAppElement("#root"); // This line is needed for accessibility reasons
+import Modal from "@mui/material/Modal";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function CreateWallet({ onNewWallet }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -37,6 +51,7 @@ export default function CreateWallet({ onNewWallet }) {
       console.log(data);
       setMessage("Wallet created successfully!");
       onNewWallet(data.walletAddress); // Pass the new wallet address to the parent component
+      window.location.reload(false);
     } else {
       setMessage("Failed to create wallet.");
       console.error("Failed to create wallet");
@@ -45,22 +60,36 @@ export default function CreateWallet({ onNewWallet }) {
 
   return (
     <div>
-      <button onClick={openModal}>Create New Wallet</button>
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-        <h2>Create a new wallet</h2>
-        {message && <p>{message}</p>}
-        <form onSubmit={handleFormSubmit}>
-          <label>
-            Wallet name:
-            <input
-              type="text"
-              value={walletName}
-              onChange={handleInputChange}
-            />
-          </label>
-          <button type="submit">Create Wallet</button>
-        </form>
-        <button onClick={closeModal}>Close</button>
+      <Button onClick={openModal} variant="contained" endIcon={<WalletIcon />}>
+        Create New Wallet
+      </Button>
+
+      <Modal
+        keepMounted
+        open={modalIsOpen}
+        onClose={closeModal}
+        aria-labelledby="keep-mounted-modal-title"
+        aria-describedby="keep-mounted-modal-description"
+      >
+        <Box sx={style}>
+          <form onSubmit={handleFormSubmit}>
+            <label>
+              Wallet name:
+              <input
+                type="text"
+                value={walletName}
+                onChange={handleInputChange}
+              />
+            </label>
+
+            <button type="submit">Create Wallet</button>
+          </form>
+          <br />
+          {message && <p>{message}</p>}
+          <center>
+            <button onClick={closeModal}>Close</button>
+          </center>
+        </Box>
       </Modal>
     </div>
   );

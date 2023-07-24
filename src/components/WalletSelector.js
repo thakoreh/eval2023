@@ -1,7 +1,34 @@
 import React, { useState, useEffect } from "react";
+import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import { useTheme } from "@mui/material/styles";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+function getStyles(name, personName, theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
 
 function WalletSelector({ activeWallet, onWalletChange }) {
   const [wallets, setWallets] = useState([]);
+  const theme = useTheme();
 
   // Fetch the list of wallets when the component mounts
   useEffect(() => {
@@ -18,20 +45,37 @@ function WalletSelector({ activeWallet, onWalletChange }) {
     fetchWallets();
   }, []);
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(activeWallet);
+    alert("Copied to clipboard!");
+  };
+
   return (
     <>
-      Select a Wallet :<hr />
-      <select
-        style={{ width: "60%" }}
+      <p style={{ fontSize: "20px" }}>Select a Wallet :</p>
+      <hr />
+      <br />
+      <Select
+        style={{ width: "80%" }}
+        labelId="wallet-selectorl"
+        id="wallet-selector"
         value={activeWallet}
         onChange={(event) => onWalletChange(event.target.value)}
+        MenuProps={MenuProps}
       >
         {wallets.map((wallet) => (
-          <option key={wallet.wallet_address} value={wallet.wallet_address}>
+          <MenuItem key={wallet.wallet_address} value={wallet.wallet_address}>
             {wallet.wallet_name} - {wallet.wallet_address}
-          </option>
+          </MenuItem>
         ))}
-      </select>
+      </Select>
+      <br />
+      <br />
+      <Button variant="outlined" onClick={copyToClipboard} color="success">
+        Copy Address to Clipboard
+      </Button>
+      <br />
+      <br />
     </>
   );
 }

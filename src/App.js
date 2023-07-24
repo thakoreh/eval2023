@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import Button from "@mui/material/Button";
@@ -22,6 +22,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
 import ParticleBackground from "./particleBackground";
+import ParticlesBg from "particles-bg";
 import CreateWallet from "./components/create-wallet";
 import RequestFaucet from "./components/RequestFaucet";
 import Balance from "./components/Balance";
@@ -30,6 +31,8 @@ import SendTransaction from "./components/SendTransactions";
 
 import DetailsPage from "./pages/DetailsPage";
 import WalletsPage from "./pages/WalletsPage";
+import SearchPage from "./pages/SearchPage";
+import WalletShow from "./components/WalletShow";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "transparent",
@@ -132,6 +135,56 @@ const drawerWidth = 240;
 const navItems = ["Home", "About", "Contact"];
 
 function SearchAppBar({ activeWallet }) {
+  const [searchedWallet, setSearchedWallet] = useState("");
+  const [searchResult, setSearchResult] = useState(null);
+
+  const handleInputChange = (event) => {
+    setSearchedWallet(event.target.value);
+  };
+
+  const handleSearch = async () => {
+    // Call your backend service to search for the wallet address
+
+    if (!searchedWallet) {
+      alert("Please enter public address first");
+      // window.location.replace("http://localhost:3000/");
+    } else {
+      // The service should first search in MongoDB and then in BlockCypher if not found
+      const response = await fetch(
+        `http://localhost:8000/search/${searchedWallet}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      localStorage.setItem("results", JSON.stringify(data));
+      if (data.message === `No wallet found with address ${searchedWallet}`) {
+        alert(
+          `No wallet found with address ${searchedWallet} Now querying to blockcypher`
+        );
+        const response = await fetch(
+          `http://localhost:8000/search/blockcypher/${searchedWallet}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const data = await response.json();
+        console.log(data);
+        localStorage.setItem("results", data);
+        setSearchResult(data);
+      }
+    }
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -146,7 +199,9 @@ function SearchAppBar({ activeWallet }) {
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
             <Button variant="outlined">
-              <Link to="/">Home</Link>
+              <Link to="/" style={{ textDecoration: "none" }}>
+                Home
+              </Link>
             </Button>
           </Typography>
 
@@ -155,22 +210,40 @@ function SearchAppBar({ activeWallet }) {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search Txs"
+              placeholder="Search"
               inputProps={{ "aria-label": "search" }}
+              value={searchedWallet}
+              onChange={handleInputChange}
             />
-            <Button variant="text">Search</Button>
+
+            <Button
+              as={Link}
+              to="/search"
+              variant="text"
+              onClick={handleSearch}
+              style={{ textDecoration: "none" }}
+              render={() => <SearchPage />}
+            >
+              Search
+            </Button>
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              <Button variant="outlined" style={{ marginRight: "10px" }}>
-                <Link to="/details">Details</Link>
-              </Button>
-            </Box>
+            {activeWallet ? (
+              <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                <Button variant="outlined" style={{ marginRight: "10px" }}>
+                  <Link to="/details" style={{ textDecoration: "none" }}>
+                    Details
+                  </Link>
+                </Button>
+              </Box>
+            ) : null}
 
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
               <Button variant="outlined">
-                <Link to="/wallets">Wallets</Link>
+                <Link to="/wallets" style={{ textDecoration: "none" }}>
+                  Wallets
+                </Link>
               </Button>
             </Box>
           </Box>
@@ -191,22 +264,44 @@ function HomePage({
     <>
       <Balance activeWallet={activeWallet} onNewBalance={setBalance} />
 
+      <WalletShow activeWallet={activeWallet} onNewBalance={setBalance} />
+      <br />
+
       <CreateWallet onNewWallet={onNewWallet} />
+      <br />
 
       <div style={{ width: "600px", maxWidth: "90%" }}>
-        <p style={{ textAlign: "center", fontSize: "18px" }}>
-          {balance
-            ? "Perform transaction"
-            : "You have 0 in your wallet. Please request for faucet"}
-        </p>
-        <RequestFaucet activeWallet={activeWallet} />
-        <Divider />
-        <WalletSelector
-          activeWallet={activeWallet}
-          onWalletChange={setWalletAddress}
-        />
+        <Item>
+          <p style={{ textAlign: "center", fontSize: "18px" }}>
+            {activeWallet ? (
+              <>
+                {" "}
+                {
+                  <div>
+                    <>
+                      You'll need a Faucet to perform transaction. Please
+                      request below.
+                    </>
+                    <RequestFaucet activeWallet={activeWallet} />
+                  </div>
+                }
+              </>
+            ) : (
+              <>Select a Wallet or Create a New Wallet</>
+            )}
+          </p>
+        </Item>
 
-        <SendTransaction activeWallet={activeWallet} />
+        <Divider />
+
+        <Item>
+          <WalletSelector
+            activeWallet={activeWallet}
+            onWalletChange={setWalletAddress}
+          />
+
+          <SendTransaction activeWallet={activeWallet} />
+        </Item>
       </div>
     </>
   );
@@ -231,7 +326,7 @@ function App() {
         }}
       >
         <SearchAppBar activeWallet={walletAddress} />
-        {/* <Header activeWallet={walletAddress} /> */}
+
         <br />
         <center>
           <Routes>
@@ -247,11 +342,13 @@ function App() {
                 />
               }
             />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/wallets" element={<WalletsPage />} />
             <Route path="/details/:id" element={<DetailsPage />} />
           </Routes>
         </center>
-        <ParticleBackground />
+
+        <ParticlesBg type="cobweb" color="#ff0000" num={50} bg={true} />
       </div>
     </Router>
   );

@@ -10,6 +10,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -48,19 +55,37 @@ export default function DetailsPage() {
 
   return (
     <div>
-      <h1>Wallet Details</h1>
-      <p>Wallet Name: {detailsData.walletName}</p>
-      <p>Wallet Address: {detailsData.walletAddress}</p>
-
-      <QRCode value={detailsData.walletAddress} />
-      <br></br>
-      <a
-        href={`https://live.blockcypher.com/bcy/address/${detailsData.walletAddress}`}
-        target="_blank"
-        rel="noopener noreferrer"
+      <Card
+        sx={{ maxWidth: 345 }}
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.4)" }}
       >
-        Wallet URL
-      </a>
+        <br />
+        <QRCode value={detailsData.walletAddress} />
+        <br />
+        <br />
+        <a
+          href={`https://live.blockcypher.com/bcy/address/${detailsData.walletAddress}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Wallet URL
+        </a>
+        <h1>Wallet Details</h1>
+        <p>
+          <h3>Wallet Name:</h3> {detailsData.walletName}
+        </p>
+        <p>
+          <h3>Wallet Address:</h3> {detailsData.walletAddress}
+        </p>
+        <p>
+          <h3>Balance:</h3>
+          <p style={{ fontFamily: "fantasy", fontSize: "25px" }}>
+            {detailsData.balance}
+          </p>
+        </p>
+
+        <br></br>
+      </Card>
       <h2>Transactions</h2>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -87,7 +112,7 @@ export default function DetailsPage() {
                   {transaction.amount}
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  {transaction.coin_symbol}
+                  {transaction.coin_symbol.toUpperCase()}
                 </StyledTableCell>
               </StyledTableRow>
             ))}

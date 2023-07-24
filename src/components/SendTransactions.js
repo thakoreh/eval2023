@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 
 function SendTransaction({ activeWallet }) {
   const [amount, setAmount] = useState("");
@@ -44,6 +49,12 @@ function SendTransaction({ activeWallet }) {
       const data = await response.json();
       console.log(data);
       const transactionId = data.response; // Assuming the transaction ID is in the _id field
+      const status_code = data.status_code; // Status code
+      if (status_code === 500) {
+        alert("Please check your address again!");
+        setIsLoading(false);
+        return;
+      }
       let confirmations = 0;
       // Poll the backend every second until confirmations >= 1
       while (confirmations < 1) {
@@ -87,8 +98,11 @@ function SendTransaction({ activeWallet }) {
   return (
     <form onSubmit={handleFormSubmit}>
       Amount to be sent :<hr />
-      <input
-        style={{ width: "10%" }}
+      <TextField
+        id="amt_to_send"
+        label="Amount to send"
+        variant="outlined"
+        style={{ width: "80%" }}
         type="number"
         value={amount}
         onChange={handleAmountChange}
@@ -101,33 +115,33 @@ function SendTransaction({ activeWallet }) {
       <br />
       <br />
       Destination address :<hr />
-      <input
-        style={{ width: "60%" }}
+      <TextField
+        id="destination-address"
+        label="Destination address"
+        variant="outlined"
+        style={{ width: "80%" }}
         type="text"
         value={destination}
         onChange={handleDestinationChange}
         placeholder="Destination address"
       />
-      <button
-        style={{
-          fontSize: "20px",
-          padding: "10px",
-          borderRadius: "5px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          transitionDuration: "0.4s",
-          margin: "10px auto",
-          display: "block",
-        }}
+      <br />
+      <br />
+      <Button
+        variant="contained"
+        endIcon={<SendIcon />}
         type="submit"
         disabled={isLoading}
-        onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
-        onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
       >
         {isLoading ? "Sending..." : "Send"}
-      </button>
+      </Button>
+      {isLoading ? (
+        <>
+          <Box sx={{ display: "block", marginTop: "20px" }}>
+            <CircularProgress />
+          </Box>
+        </>
+      ) : null}
     </form>
   );
 }

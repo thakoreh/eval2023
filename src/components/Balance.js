@@ -31,7 +31,17 @@ function Balance({ activeWallet, onNewBalance }) {
 
   return (
     <div style={{ fontSize: "35px" }}>
-      BAL: {balance !== null ? balance : "N/A"}
+      BAL:
+      {balance !== null ? (
+        balance
+      ) : (
+        <>
+          <p style={{ fontSize: "20px" }}>N/A.</p>
+          <p style={{ fontSize: "15px" }}>
+            Please select wallet below or create a new wallet
+          </p>
+        </>
+      )}
     </div>
   );
 }

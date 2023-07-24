@@ -1,35 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import { Link } from "react-router-dom";
-
-// function WalletsPage() {
-//   const [wallets, setWallets] = useState([]);
-
-//   useEffect(() => {
-//     // Fetch wallet data from your backend.
-//     fetch("http://localhost:8000/wallets")
-//       .then((response) => response.json())
-//       .then((data) => setWallets(data))
-//       .catch((error) => console.error(error));
-//   }, []);
-
-//   return (
-//     <div>
-//       <h1>Wallets</h1>
-//       <ul>
-//         {wallets.map((wallet) => (
-//           <li key={wallet.index}>
-//             <Link to={`/details/${wallet.wallet_address}`}>
-//               {wallet.wallet_name} - {wallet.wallet_address}
-//             </Link>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-
-// export default WalletsPage;
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";

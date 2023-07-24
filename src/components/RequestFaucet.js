@@ -1,9 +1,25 @@
 import React, { useState } from "react";
-import Modal from "react-modal";
+// import Modal from "react-modal";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
-Modal.setAppElement("#root"); // This line is needed for accessibility reasons
+import Box from "@mui/material/Box";
+
+import Modal from "@mui/material/Modal";
+
+// Modal.setAppElement("#root"); // This line is needed for accessibility reasons
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 function RequestFaucet({ activeWallet }) {
   const [amount, setAmount] = useState("");
@@ -17,6 +33,8 @@ function RequestFaucet({ activeWallet }) {
       setError("Amount cannot be negative");
     } else if (value === "") {
       setError("Amount cannot be empty");
+    } else if (activeWallet === null) {
+      setError("Wallet cannot be empty");
     } else {
       setError(null);
     }
@@ -27,6 +45,10 @@ function RequestFaucet({ activeWallet }) {
     event.preventDefault();
     if (error || amount === "") {
       alert("Please enter a valid amount");
+      return;
+    }
+    if (activeWallet === null) {
+      alert("Select a wallet");
       return;
     }
     const response = await fetch("http://localhost:8000/requestfaucet", {
@@ -45,7 +67,7 @@ function RequestFaucet({ activeWallet }) {
       setMessage("Transaction successful!");
     } else {
       setMessage("Transaction failed.");
-      console.error("Failed to request faucet");
+      console.error("Failed to request faucet.");
     }
     setModalIsOpen(true);
   };
@@ -80,12 +102,25 @@ function RequestFaucet({ activeWallet }) {
           }}
           type="submit"
         >
-          Request from faucet
+          Request Faucet
         </button>
       </form>
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
+      {/* <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
         <h2>{message}</h2>
         <button onClick={closeModal}>Close</button>
+      </Modal> */}
+
+      <Modal
+        keepMounted
+        open={modalIsOpen}
+        onClose={closeModal}
+        aria-labelledby="keep-mounted-modal-title"
+        aria-describedby="keep-mounted-modal-description"
+      >
+        <Box sx={style}>
+          <h2>{message}</h2>
+          <button onClick={closeModal}>Close</button>
+        </Box>
       </Modal>
     </div>
   );

@@ -71,9 +71,11 @@ function WalletSelector({ activeWallet, onWalletChange }) {
       </Select>
       <br />
       <br />
-      <Button variant="outlined" onClick={copyToClipboard} color="success">
-        Copy Address to Clipboard
-      </Button>
+      {activeWallet ? (
+        <Button variant="outlined" onClick={copyToClipboard} color="success">
+          Copy Address to Clipboard
+        </Button>
+      ) : null}
       <br />
       <br />
     </>

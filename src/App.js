@@ -231,10 +231,16 @@ function SearchAppBar({ activeWallet }) {
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             {activeWallet ? (
               <Box sx={{ display: { xs: "none", sm: "block" } }}>
-                <Button variant="outlined" style={{ marginRight: "10px" }}>
-                  <Link to="/details" style={{ textDecoration: "none" }}>
-                    Details
-                  </Link>
+                <Button
+                  as={Link}
+                  to={`/details/${activeWallet}`}
+                  variant="outlined"
+                  style={{ marginRight: "10px", textDecoration: "none" }}
+                  render={() => <DetailsPage />}
+                >
+                  {/* <Link to="/details" style={{ textDecoration: "none" }}> */}
+                  Details
+                  {/* </Link> */}
                 </Button>
               </Box>
             ) : null}
@@ -262,10 +268,14 @@ function HomePage({
 }) {
   return (
     <>
-      <Balance activeWallet={activeWallet} onNewBalance={setBalance} />
+      {activeWallet ? (
+        <>
+          <Balance activeWallet={activeWallet} onNewBalance={setBalance} />
 
-      <WalletShow activeWallet={activeWallet} onNewBalance={setBalance} />
-      <br />
+          <WalletShow activeWallet={activeWallet} onNewBalance={setBalance} />
+          <br />
+        </>
+      ) : null}
 
       <CreateWallet onNewWallet={onNewWallet} />
       <br />

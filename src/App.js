@@ -232,15 +232,14 @@ function SearchAppBar({ activeWallet }) {
             {activeWallet ? (
               <Box sx={{ display: { xs: "none", sm: "block" } }}>
                 <Button
+                  className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1rwt2y5-MuiButtonBase-root-MuiButton-root"
                   as={Link}
                   to={`/details/${activeWallet}`}
                   variant="outlined"
                   style={{ marginRight: "10px", textDecoration: "none" }}
                   render={() => <DetailsPage />}
                 >
-                  {/* <Link to="/details" style={{ textDecoration: "none" }}> */}
                   Details
-                  {/* </Link> */}
                 </Button>
               </Box>
             ) : null}

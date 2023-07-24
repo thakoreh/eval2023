@@ -55,6 +55,11 @@ function SendTransaction({ activeWallet }) {
         setIsLoading(false);
         return;
       }
+      if (status_code === 400) {
+        alert("Please increase sending amount, It is too low");
+        setIsLoading(false);
+        return;
+      }
       let confirmations = 0;
       // Poll the backend every second until confirmations >= 1
       while (confirmations < 1) {

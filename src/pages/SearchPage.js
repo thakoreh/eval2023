@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -10,25 +11,28 @@ import {
 } from "@mui/material";
 
 const SearchPage = () => {
-  const [fetchWalletAddress, setFetchWalletAddress] = useState("");
-  const [fetchDataResults, setFetchDataResults] = useState({});
+  const [detailsData, setDetailsData] = useState({});
+  const [transactions, setTransactions] = useState([]);
+  const { id } = useParams();
+  console.log("id: " + id);
 
-  // Fetch results from local storage
   useEffect(() => {
-    const searchResults = window.localStorage.getItem("results");
-    if (searchResults) {
-      try {
-        const x = JSON.parse(searchResults);
-        setFetchWalletAddress(x.data.walletAddress);
-        setFetchDataResults(x.data);
-      } catch {
-        setFetchWalletAddress(null);
-      }
-    }
-  }, []);
+    fetch(`http://localhost:8000/search/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setDetailsData(data.data);
+        if (data.status_code === 404)
+          fetch(`http://localhost:8000/search/blockcypher/${id}`)
+            .then((response) => response.json())
+            .then((data) => {
+              setDetailsData(data.data);
+            });
+      });
+  }, [id]);
 
+  console.log("details :" + detailsData);
   // You can add a loading state or return null or some placeholder if fetchSearchResults is null
-  if (!fetchWalletAddress) {
+  if (!detailsData) {
     return <p>Please enter a public address</p>;
   }
 
@@ -36,9 +40,14 @@ const SearchPage = () => {
     <>
       <h2>Search Result:</h2>
       <div>
-        <p>Wallet Address: {fetchWalletAddress}</p>
+        {detailsData.address ? (
+          <p>Wallet Address: {detailsData?.address}</p>
+        ) : (
+          <p>Wallet Address: {detailsData?.walletAddress}</p>
+        )}
+
         {/* Assuming your fetchSearchResults has a balance property. */}
-        <p>Balance: {fetchDataResults.balance}</p>
+        <p>Balance: {detailsData?.balance}</p>
       </div>
       <h2>Transactions:</h2>
       <TableContainer component={Paper}>
@@ -52,7 +61,7 @@ const SearchPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {fetchDataResults?.transactions.map((transaction) => (
+            {detailsData.transactions?.map((transaction) => (
               <TableRow key={transaction.tx_ref}>
                 <TableCell component="th" scope="row">
                   <a

@@ -218,7 +218,7 @@ function SearchAppBar({ activeWallet }) {
 
             <Button
               as={Link}
-              to="/search"
+              to={`/search/${searchedWallet}`}
               variant="text"
               onClick={handleSearch}
               style={{ textDecoration: "none" }}
@@ -351,7 +351,7 @@ function App() {
                 />
               }
             />
-            <Route path="/search" element={<SearchPage />} />
+            <Route path="/search/:id" element={<SearchPage />} />
             <Route path="/wallets" element={<WalletsPage />} />
             <Route path="/details/:id" element={<DetailsPage />} />
           </Routes>

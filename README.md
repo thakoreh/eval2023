@@ -25,3 +25,6 @@ We need to do "pip install -r requirements.txt" command in terminal that will do
 now to run the back end server, just enter the below command :
 
 uvicorn main:app --reload
+
+
+demo video: https://youtu.be/iLvGmLgWZyA
